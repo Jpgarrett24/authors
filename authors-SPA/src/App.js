@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
+import { Router } from "@reach/router";
 import './App.css';
+import Homepage from './views/Homepage';
+import AddAuthor from './views/AddAuthor';
+import EditAuthor from './views/EditAuthor';
 // authors
 
 function App() {
+  const [authors, setAuthors] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/api/authors")
+      .then((res) => { setAuthors(res.data) })
+      .catch((err) => { console.log(err); })
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Reactt
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>Favorite Authors</h1>
+      <Router>
+        <Homepage path="/" authors={authors} setAuthors={setAuthors} />
+        <AddAuthor path="/authors/new" />
+        <EditAuthor path="/authors/edit/:_id" />
+      </Router>
+    </>
   );
 }
 
